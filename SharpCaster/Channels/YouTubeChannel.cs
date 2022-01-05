@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SharpCaster.Channels
@@ -14,6 +15,8 @@ namespace SharpCaster.Channels
         public static string Urn = "urn:x-cast:com.google.youtube.mdx";
         private int _rid = 0;
         private int _req_count = 0;
+        private string _gsessionid;
+        private string _sid;
         private string _screenid;
         private YoutubeLoungeBinding _currentlounge;
         public event EventHandler<string> ScreenIdChanged;
@@ -35,20 +38,25 @@ namespace SharpCaster.Channels
             ScreenIdChanged?.Invoke(this, response.Data.ScreenId);
         }
 
+        public void PlayVideo()
+        {
+
+        }
         public async Task<string> BindToLounge()
         {
-            if (_screenid.Any() && _currentlounge == null)
+            if (_screenid.Any() && _currentlounge != null)
             {
                 using (var client = new HttpClient())
                 {
-                    var nvc = new List<KeyValuePair<string, string>>();
-                    nvc.Add(new KeyValuePair<string, string>("X-YouTube-LoungeId-Token", _currentlounge.screens.First().loungeToken));
-
-                    var req = new HttpRequestMessage(HttpMethod.Post, YoutubeChannelConfiguration.BIND_URL + $"?RID={this._rid}&VER=8&CVER=1&ID={new Random().Next(1, Int32.MaxValue)}&device=REMOTE_CONTROL&name=CliteriusRex&mdx-version=3&pairing_type=cast&app=android-phone-13.14.55") { Content = new FormUrlEncodedContent(nvc) };
+                    client.DefaultRequestHeaders.Add("X-YouTube-LoungeId-Token", _currentlounge.screens.First().loungeToken);
+                    var req = new HttpRequestMessage(HttpMethod.Post, YoutubeChannelConfiguration.BIND_URL + $"?RID={this._rid}&VER=8&CVER=1&id={new Random().Next(1, Int32.MaxValue)}&device=REMOTE_CONTROL&name=CliteriusRex&mdx-version=3&pairing_type=cast&app=android-phone-13.14.55");
                     try
                     {
                         var nice = await client.SendAsync(req);
-                        return await nice.Content.ReadAsStringAsync();
+                        var regdata = await nice.Content.ReadAsStringAsync();
+                        _gsessionid = Regex.Match(regdata, "\"S\",(.*?)]").Groups[1].Value.Replace("\"","");
+                        _sid = Regex.Match(regdata, "\"c\",\"(.*?)\",\\\"").Groups[1].Value;
+                        return regdata;
                     }
                     catch (Exception ex)
                     {
@@ -96,6 +104,8 @@ namespace SharpCaster.Channels
         public static string BIND_URL = YOUTUBE_BASE_URL + @"api/lounge/bc/bind";
         public static string LOUNGE_TOKEN_URL = YOUTUBE_BASE_URL + @"api/lounge/pairing/get_lounge_token_batch";
         public static string QUEUE_AJAX_URL = YOUTUBE_BASE_URL + "watch_queue_ajax";
+
+
       
     }
     public static class YouTubeChannelExtesion
