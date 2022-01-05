@@ -23,7 +23,7 @@ namespace SharpCaster.Channels
             ScreenIdChanged?.Invoke(this, response.Data.ScreenId);
         }
 
-        private
+        
     }
 
     public static class YouTubeChannelExtesion
