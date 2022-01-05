@@ -1,4 +1,5 @@
-﻿using SharpCaster.Controllers;
+﻿using Newtonsoft.Json;
+using SharpCaster.Controllers;
 using SharpCaster.Models;
 using SharpCaster.Services;
 using System;
@@ -40,13 +41,10 @@ namespace NoChromo
         private async void ChromeCastClient_ConnectedChanged(object sender, EventArgs e)
         {
             if (_controller == null) _controller =  await ChromecastService.Current.ChromeCastClient.LaunchYouTube();
-            _controller.ScreenIdChanged += _controller_ScreenIdChanged;
+         
         }
 
-        private void _controller_ScreenIdChanged(object sender, string e)
-        {
-            throw new NotImplementedException();
-        }
+   
 
         private async void button1_Click(object sender, EventArgs e)
         {
@@ -55,6 +53,7 @@ namespace NoChromo
             var chromecast = chromecasts.First();
           
              await ChromecastService.Current.ConnectToChromecast(chromecast);
+            MessageBox.Show("Connected");
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -66,6 +65,14 @@ namespace NoChromo
                 _controller.SetMute(false);
             } while (true);
            
+        }
+
+        private async void button3_Click(object sender, EventArgs e)
+        {
+            var data = await _controller.GetLoungeID();
+            MessageBox.Show(JsonConvert.SerializeObject(data));
+            var betterdatavar = await _controller.BindToLounge();
+            MessageBox.Show(JsonConvert.SerializeObject(betterdatavar));
         }
     }
 }

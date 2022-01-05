@@ -64,6 +64,7 @@
     <Compile Include="Models\Metadata\TvShowMediaMetadata.cs" />
     <Compile Include="Models\Protobuf\CastChannel.cs" />
     <Compile Include="Models\Protobuf\Logging.cs" />
+    <Compile Include="Models\YoutubeLoungeBinding.cs" />
     <Compile Include="Services\ChromeCastService.cs" />
     <Compile Include="Interfaces\IChromecastService.cs" />
     <Compile Include="Interfaces\IChromecastSocketService.cs" />

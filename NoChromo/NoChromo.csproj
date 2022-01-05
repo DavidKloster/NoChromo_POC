@@ -108,5 +108,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharpCaster\SharpCaster.Portable.csproj">
+      <Project>{56D42483-550D-4817-844B-6C27D880130F}</Project>
+      <Name>SharpCaster.Portable</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

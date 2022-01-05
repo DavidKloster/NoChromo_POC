@@ -11,6 +11,11 @@ namespace SharpCaster.Controllers
             await Client.ReceiverChannel.LaunchApplication(ApplicationId);
         }
 
+        public async Task ConnectApplication()
+        {
+            await Client.ReceiverChannel.ConnectToApplication(ApplicationId);
+        }
+
         protected readonly ChromeCastClient Client;
 
         protected BaseController(ChromeCastClient client, string applicationId)
