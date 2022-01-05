@@ -37,9 +37,38 @@ namespace SharpCaster.Channels
             var response = JsonConvert.DeserializeObject<YouTubeSessionStatusResponse>(json);
             ScreenIdChanged?.Invoke(this, response.Data.ScreenId);
         }
-
-        public void PlayVideo()
+        
+        public bool InSession()
         {
+            if (_gsessionid.Any() && _currentlounge != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public async Task StartSession()
+        {
+            await GetLoungeID();
+            await BindToLounge();
+        }
+        public async void PlayVideo()
+        {
+            if (!InSession())
+            {
+                await StartSession();
+            }
+            using (var client = new HttpClient())
+            {
+                var nvc = new List<KeyValuePair<string, string>>();
+                nvc.Add(new KeyValuePair<string, string>("screen_ids", _screenid));
+                var req = new HttpRequestMessage(HttpMethod.Post, YoutubeChannelConfiguration.LOUNGE_TOKEN_URL) { Content = new FormUrlEncodedContent(nvc) };
+                var nice = await client.SendAsync(req);
+                _currentlounge = JsonConvert.DeserializeObject<YoutubeLoungeBinding>(await nice.Content.ReadAsStringAsync());
+            
+            }
 
         }
         public async Task<string> BindToLounge()
@@ -62,9 +91,7 @@ namespace SharpCaster.Channels
                     {
 
                         throw;
-                    }
-                    
-                    
+                    }                         
                
                 }
 
