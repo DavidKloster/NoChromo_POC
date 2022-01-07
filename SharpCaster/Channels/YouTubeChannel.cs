@@ -54,7 +54,38 @@ namespace SharpCaster.Channels
             await GetLoungeID();
             await BindToLounge();
         }
-        public async void PlayVideo()
+        public async Task<string> GetSessionInformation()
+        {
+            if (_screenid.Any() && _currentlounge != null)
+            {
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Add("X-YouTube-LoungeId-Token", _currentlounge.screens.First().loungeToken);
+                    this._req_count++;
+                    this._rid++;
+                    var req = new HttpRequestMessage(HttpMethod.Post, YoutubeChannelConfiguration.BIND_URL + $"?RID={this._rid}&VER=8&CVER=1&id=1337&device=REMOTE_CONTROL&name=SocialCreditSystem&mdx-version=3&pairing_type=cast&app=android-phone-13.14.55&loungeIdToken={_currentlounge.screens.First().loungeToken}&v=2&SID={_sid}&gsessionid={_gsessionid}&TYPE=xmlhttp&t=1&AID=5&CI=1");
+                    try
+                    {
+                        var nice = await client.SendAsync(req);
+                        var regdata = await nice.Content.ReadAsStringAsync();
+                 
+                        return regdata;
+                    }
+                    catch (Exception ex)
+                    {
+
+                        throw;
+                    }
+
+                }
+
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public async void InitializeQueue()
         {
             if (!InSession())
             {
@@ -78,7 +109,7 @@ namespace SharpCaster.Channels
                 using (var client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Add("X-YouTube-LoungeId-Token", _currentlounge.screens.First().loungeToken);
-                    var req = new HttpRequestMessage(HttpMethod.Post, YoutubeChannelConfiguration.BIND_URL + $"?RID={this._rid}&VER=8&CVER=1&id={new Random().Next(1, Int32.MaxValue)}&device=REMOTE_CONTROL&name=CliteriusRex&mdx-version=3&pairing_type=cast&app=android-phone-13.14.55");
+                    var req = new HttpRequestMessage(HttpMethod.Post, YoutubeChannelConfiguration.BIND_URL + $"?RID={this._rid}&VER=8&CVER=1&id=1337&device=REMOTE_CONTROL&name=SocialCreditSystem&mdx-version=3&pairing_type=cast&app=android-phone-13.14.55");
                     try
                     {
                         var nice = await client.SendAsync(req);

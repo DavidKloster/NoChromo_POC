@@ -81,5 +81,11 @@ namespace NoChromo
             var betterdatavar = await _controller.BindToLounge();
             MessageBox.Show(JsonConvert.SerializeObject(betterdatavar));
         }
+
+        private async void button4_Click(object sender, EventArgs e)
+        {
+            var data = await _controller.GetSessionInformation();
+            MessageBox.Show(JsonConvert.SerializeObject(data));
+        }
     }
 }

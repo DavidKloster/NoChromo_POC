@@ -29,6 +29,10 @@ namespace SharpCaster.Controllers
         {
             return await _client.Channels.GetYouTubeChannel().GetLoungeID();
         }
+        public async Task<string> GetSessionInformation()
+        {
+            return await _client.Channels.GetYouTubeChannel().GetSessionInformation();
+        }
     }
 
     public static class YouTubeControllerExtensions
