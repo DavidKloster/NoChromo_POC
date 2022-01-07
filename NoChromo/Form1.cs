@@ -50,10 +50,17 @@ namespace NoChromo
         {
 
             ObservableCollection<Chromecast> chromecasts = await ChromecastService.Current.StartLocatingDevices();
-            var chromecast = chromecasts.First();
-          
-             await ChromecastService.Current.ConnectToChromecast(chromecast);
-            MessageBox.Show("Connected");
+            var chromecast = chromecasts.FirstOrDefault();
+            if (chromecast !=null)
+            {
+                await ChromecastService.Current.ConnectToChromecast(chromecast);
+                MessageBox.Show("Connected");
+            }
+            else
+            {
+                MessageBox.Show("Not Found");
+            }
+
         }
 
         private void button2_Click(object sender, EventArgs e)

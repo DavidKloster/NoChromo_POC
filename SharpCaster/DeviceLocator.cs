@@ -50,6 +50,7 @@ namespace SharpCaster
                     DiscoveredDevices.Add(chromecast);
                 }
             }
+            DiscoveredDevices.Add(new Chromecast() { DeviceUri = new Uri(@"https://192.168.188.52/"), FriendlyName = "Garage" });
             return DiscoveredDevices;
         }
 
